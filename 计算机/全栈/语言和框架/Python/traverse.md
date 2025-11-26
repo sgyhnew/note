@@ -172,3 +172,58 @@ def traverse_skills(data, path=""):
 # 调用
 
 traverse_skills(skills)
+
+
+
+最终成果
+def traverse_skills1(data, path=""): # 递归
+
+    """递归遍历任意深度的嵌套字典"""
+
+    if not isinstance(data, dict):
+
+        # 到达叶子节点
+
+        print(f"{path}: {data if not callable(data) else '<函数>'}")
+
+        return
+
+    for key, value in data.items():
+
+        current_path = f"{path}.{key}" if path else key
+
+        traverse_skills1(value, current_path)
+
+def traverse_skills2(data,path=()):
+
+    if isinstance(data, dict) and data and not callable(data):
+
+        for key,value in data.items():
+
+            yield from traverse_skills2(value, path+(key,))
+
+    else:
+
+        yield ".".join(path), data
+
+def traverse_skills3(data: dict,path=()):
+
+    for k,v in data.items():
+
+        if isinstance(v,dict) and v and not callable(v):
+
+            yield from traverse_skills3(v,path+(k,))
+
+        else:
+
+            yield path+(k,),v
+
+traverse_skills1(skills)
+
+for k,v in traverse_skills2(skills):
+
+    print(k,v)
+
+for k,v in traverse_skills3(skills):
+
+    print(k,v)
